@@ -10,6 +10,8 @@ label = pyglet.text.Label('Hello, world',
                           x=window.width//2, y=window.height//2,
                           anchor_x='center', anchor_y='center')
 
+#test github and vscode on windows
+
 def update(dt):
     pass
 
