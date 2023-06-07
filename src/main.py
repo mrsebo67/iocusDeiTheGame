@@ -1,7 +1,6 @@
 import pyglet
 import scenes.mainScene as mainScene
 
-
 window = pyglet.window.Window(fullscreen=True)
 
 
@@ -17,7 +16,7 @@ def on_draw():
 
 
 if __name__ == '__main__':
-    pyglet.clock.schedule_interval(update, 1/1.0)
+    pyglet.clock.schedule_interval(update, 1/5.0)
 
     mainScene = mainScene.MainScene(window)
 

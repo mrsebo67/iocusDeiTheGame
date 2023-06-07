@@ -12,6 +12,9 @@ class MainScene:
         self.centerX = window.width//2
         self.centerY = window.height//2
 
+        self.loadTextures()
+
+    def loadTextures(self):
         heart = pyglet.image.load("sprites/heart.png")
         heart.anchor_x = heart.width // 2
         heart.anchor_y = heart.height // 2
@@ -23,11 +26,9 @@ class MainScene:
         self.mainSceneBGSprite = pyglet.sprite.Sprite(mainSceneBG, x=self.centerX, y=self.centerY)
 
 
-
     def update(self):
 
-        self.heartSprite.x = randint(0, self.width)
-        self.heartSprite.y = randint(0, self.height)
+        self.heartSprite.update(scale=randint(1,5)*2)
 
 
     def draw(self):
