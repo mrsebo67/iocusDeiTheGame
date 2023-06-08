@@ -7,13 +7,15 @@ from worldManipulation.world import World
 
 class MainScene:
 
-
+    
 
     def __init__(self, window) -> None:
         self.width = window.width
         self.height = window.height
         self.centerX = window.width//2
         self.centerY = window.height//2
+
+        self.batch = pyglet.graphics.Batch()
 
         self.loadTextures()
         self.initWorld()
@@ -22,16 +24,18 @@ class MainScene:
         self.world = World()
         self.world.createWorld()
 
+        
+
 
     def loadTextures(self):
-        heart = pyglet.image.load("src/testing/world.png")
-        heart.anchor_x = heart.width // 2
-        heart.anchor_y = heart.height // 2
-        self.heartSprite = pyglet.sprite.Sprite(heart, x= self.centerX, y= self.centerY)
-        self.heartSprite.update(scale_y=6)
-        self.heartSprite.update(scale_x=8)
+        #heart = pyglet.image.load("src/testing/world.png")
+        #heart.anchor_x = heart.width // 2
+        #heart.anchor_y = heart.height // 2
+        #self.heartSprite = pyglet.sprite.Sprite(heart, x= self.centerX, y= self.centerY)
+        #self.heartSprite.update(scale_y=6)
+        #self.heartSprite.update(scale_x=8)
 
-        mainSceneBG = pyglet.image.load("sprites/mainSceneBG2.png")
+        mainSceneBG = pyglet.image.load('sprites/mainSceneBG2.png')
         mainSceneBG.anchor_x = mainSceneBG.width // 2
         mainSceneBG.anchor_y = mainSceneBG.height // 2
         self.mainSceneBGSprite = pyglet.sprite.Sprite(mainSceneBG, x=self.centerX, y=self.centerY)
@@ -48,18 +52,8 @@ class MainScene:
 
         for i in range(0, 51):
             for j in range(0, 38):
-                self.sprites[i][j] = pyglet.sprite.Sprite(self.testTile, x = self.centerX - 408 + i*16, y = self.centerY - 308 + j*16)
+                self.sprites[i][j] = pyglet.sprite.Sprite(self.testTile, x = self.centerX - 408 + i*16, y = self.centerY - 308 + j*16, batch=self.batch)
 
-    def renderWorld(self):
-
-        batch = pyglet.graphics.Batch()
-
-        for elem in self.sprites:
-            for sprite in elem:
-                sprite.batch=batch
-        
-        batch.draw()
-        
         
 
     def loadWorld(self):
@@ -74,7 +68,7 @@ class MainScene:
         pass
         
         #self.heartSprite.draw()
-        self.renderWorld()
+        self.batch.draw()
         self.mainSceneBGSprite.draw()
         #self.testTileSprite.draw()
         #self.testTileSprite2.draw()
