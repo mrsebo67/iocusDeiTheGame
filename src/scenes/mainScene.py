@@ -24,29 +24,32 @@ class MainScene:
 
 
     def loadTextures(self):
-        heart = pyglet.image.load("sprites/heart.png")
+        heart = pyglet.image.load("src/testing/world.png")
         heart.anchor_x = heart.width // 2
         heart.anchor_y = heart.height // 2
         self.heartSprite = pyglet.sprite.Sprite(heart, x= self.centerX, y= self.centerY)
+        self.heartSprite.update(scale_y=6)
+        self.heartSprite.update(scale_x=8)
 
         mainSceneBG = pyglet.image.load("sprites/mainSceneBG.png")
         mainSceneBG.anchor_x = mainSceneBG.width // 2
         mainSceneBG.anchor_y = mainSceneBG.height // 2
         self.mainSceneBGSprite = pyglet.sprite.Sprite(mainSceneBG, x=self.centerX, y=self.centerY)
+        self.mainSceneBGSprite.update(scale=1.03)
 
     def loadWorld(self):
         pass
 
     def update(self):
-
-        self.heartSprite.update(scale=randint(1,5)*2)
+        pass
 
 
     def draw(self):
 
         
-        self.mainSceneBGSprite.draw()
+        
         self.heartSprite.draw()
+        self.mainSceneBGSprite.draw()
 
 
     
