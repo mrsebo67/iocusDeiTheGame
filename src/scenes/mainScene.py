@@ -1,5 +1,8 @@
 import pyglet
 from random import randint
+from worldManipulation.world import World
+
+
 
 
 class MainScene:
@@ -14,6 +17,12 @@ class MainScene:
 
         self.loadTextures()
 
+        #todo if the world is present in savefiles load the world instead of creating
+        self.world = World()
+        self.world.createWorld()
+
+
+
     def loadTextures(self):
         heart = pyglet.image.load("sprites/heart.png")
         heart.anchor_x = heart.width // 2
@@ -25,6 +34,8 @@ class MainScene:
         mainSceneBG.anchor_y = mainSceneBG.height // 2
         self.mainSceneBGSprite = pyglet.sprite.Sprite(mainSceneBG, x=self.centerX, y=self.centerY)
 
+    def loadWorld(self):
+        pass
 
     def update(self):
 
