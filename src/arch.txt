@@ -1,0 +1,227 @@
+ISPIT – ADMINISTRACIJA UNIX
+
+
+
+1.	Podesite TCP wrapper : hosts.deny tako da servis mysqld može spojiti samo sa adrese 172.16.0.5
+
+
+nano /etc/hosts.deny
+//dodati na kraj:
+apache2: ALL EXCEPT 172.16.1.2
+//sejvat i izac van
+
+
+2.	reverzna zona
+
+cd /etc/bind/
+nano db.172
+
+dolje dodati novi zapis ako treba
+3     IN   PTR mobitel.linuxX.tvz.hr -> X je broj računala
+service bind 9 restart
+
+
+3.	Postavite u cron da se skripta naziva backup.sh izvršava pod korisnikom pero svaki dan u 14:30h.
+
+cd /etc/
+nano crontab
+30 14 * * * pero backup.sh
+save
+/etc/init/cron restart
+
+4.	postavite pravilo u fw: zabranite ping prema adresi 193.198.206.135 sa linux računala (ne smije se postaviti u firewall)
+
+5.	Slozite e-mail posluziteli te posaljite mail sa subjectom 'test' sa korisnika root na korisnika pero. Zadatak je gotov kada korisnik pero primi e-mail sa subjectom 'test'
+
+
+cd /etc
+cd postfix
+nano main.cf
+ubaciti (zamijtniti X sa Vašim brojem računala:
+ 
+myorigin = /etc/mailname 
+myhostname = debianX.linuxX.tvz.hr 
+alias_maps = hash:/etc/aliases 
+alias_database = hash:/etc/aliases
+mydestination = debianX.linuxX.tvz.hr linuxX.tvz.hr localhost 
+mynetworks = 127.0.0.0/8 172.16.X.0/24 
+mailbox_command = procmail -a "$EXTENSION" 
+mailbox_size_limit = 0 
+recipient_delimiter = + 
+inet_interfaces = all
+ 
+pazite da je enter kod svakog novog parametra
+onda zadati naredbu kako bi se zapisala baza aliasa: 
+newaliases 
+te restart servisa:
+ /etc/init.d/postfix restart
+nakon toga pokrenite alpine pod naredbom root i pošaljite e-mail korisniku pero
+Alpine
+E (exit this greeting)
+C (compose message)
+
+6.	Napravljena je postojeca konfiguracija domene linux15.tvz.hr odnosno 172.16.15.0/24. Potrebno je dodati u forward domenu linux15.tvz.hr racunalo naziva prijava.linux15.tvz.hr sa IP adresom 172.16.15.17. obavezno ponovno pokrenuti DNS servis nakon promjene jer se provjera obavlja sa nslookup
+ 
+Cd /etc/bind
+Nano db.linux
+//dodati novi zapis:  
+prijava.linux15.tvz.hr.    IN   A  172.16.15.17
+//povecati serial za 1
+Service bind9 restart
+7.	Potrebno je promijeniti korisnika pod kojim se pokrece baza podataka iz korisnika mysql n korisnika koko. Napravite sve potrebne izmjene u konfiguracijskoj datoteci.
+
+nano /etc/mysql/my.cnf 
+- promjeniti user sa mysql na koko 
+- /etc/init.d/mysql restart
+
+8.	Potrebno je promijeniti port mysql poslužitelja sa 3306 na 3306.
+
+
+cd /etc/mysql/mariadb.conf.d
+nano 50-server.cnf
+izmjeniti port
+9.	Napravljena je postojeća konfiguracija domene linux9.tvz.hr, odnosno 172.16.9.0/24. Potrebno je dodati računalo u reverznu zonu naziva office sa ip adresom 172.16.9.7 odnosno pokrenuti DNS servis nakon promjene jer se provjera obavlja sa nslookup.
+
+nano /etc/bind/db.172 
+//na kraj dodati
+7 IN PTR loffice.linux9.tvz.hr -> ova 9 je broj računala
+// povećati serial za 1
+ /etc/init.d/bind9 restart 
+
+
+10.	stvoriti direktorij wewewe u apacheu, stvoriti index.php i u njega napisati „Hello world“.
+
+
+
+
+1.	Napravljena je postojeća konfiguracija domene linux15.tvz.hr, odnosno 172.16.15.0/24. Potrebno je dodati u reverznu domenu 15.16.172-in.addr.arpa racunalo sa IP adresom 172.16.15.17 naziva www.linux15.tvz.hr. Obavezno ponovo pokrenuti DNS servis nakon promjene jer se provjera obavlja sa nslookup
+ 
+cd/etc/bind/
+nano db.172
+//dodati novi zapis:
+17      IN      PTR     www.linux15.tvz.hr.
+// serial povecati za 1, sejvaj i restart:
+service bind9 restart
+ 
+ 
+2.	Potrebno je promjeniti mjesto gdje mysql drzi  podatke baze sa /var/lib/mysql na /etc. Napravite sve potrebne izmjene u konfiguracijskoj datoteci
+ 
+nano /etc/mysql/mariadb.conf.d/50-server.cnf 
+pronaći gdje piše datadir i promjeniti path /var/lib/mysql u /etc
+
+ne piše da treba restartat mysql ( ako bude pisalo onda treba sve prije promjene iskopirati iz /var/lib/mysql/data u /etc/data – prije toga zaustaviti mysql ) 
+
+
+ 
+3.	Postavite u cron da se skripta naziva backup.sh izvrsava pod korisnikom root svakog prvog dana u svakom mjesecu u 14h i 30 minuta (PAZNJA navedeni zadatak ne mozete provjeriti da li radi zbog odgode izvrsavanja. Kada pisete podatke u datoteku svi elementi u retku moraju biti odvojeni sa iskljucivo jednim razmakom)
+ 
+Cd /etc
+Nano crontab
+//dodati na dno:
+30 14 1  * * root backup.sh
+ 
+ 
+4.	Napravljena je postojeca konfiguracija domene linux15.tvz.hr odnosno 172.16.15.0/24. Potrebno je dodati u forward domenu linux15.tvz.hr racunalo naziva prijava.linux15.tvz.hr sa IP adresom 172.16.15.17. obavezno ponovno pokrenuti DNS servis nakon promjene jer se provjera obavlja sa nslookup
+ 
+Cd /etc/bind
+Nano db.linux
+//dodati novi zapis:  
+prijava.linux15.tvz.hr.    IN   A  172.16.15.17
+//povecati serial za 1
+Service bind9 restart
+ 
+ 
+ 
+ 
+5.	pretpostavimo da ste napravili promjenu forward zone u datoteci zone linux15.tvz.hr u prethodnim zadacima. Izmjenite sve ostalo sto je potrebno kako bi se navedene promjene mogle propagirati ostalimDNS serverima (dovoljno i nuzno je napraviti promjenu na datoteci forward zone). obavezno ponovno pokrenuti DNS servis nakon promjene jer se provjera obavlja sa nslookup
+ 
+Pretpostavljam da se pod ovim misli da se serial poveca za 1 a to smo vez napravili – mislim da je to to 
+ 
+ 
+6.	Postavite pravilo u fw. zabranite tcp port 80 prema daresi 193.198.206.139 sa LINUX racunala. Pravilo se treba postaviti u ispravan lanac! Niti jedno drugo pravilo ne smije biti postavljeno u vatrozidu
+ 
+iptables -A OUTPUT -p tcp -d 193.198.206.139 -j DROP
+ 
+iptables -A OUTPUT -p tcp -d 193.198.206.139 --dport 80 -j DROP
+
+ 
+ 
+7.	Slozite e-mail posluzitelj te posaljite mail sa subjectom "zdravo123" sa korisnika root na rorisnika pero. Zadatak je gotov kada korisnik pero primi e-mail sa subjectom "zdravo123"
+ 
+cd /etc
+cd postfix
+nano main.cf
+ubaciti (zamijtniti X sa Vašim brojem računala:
+ 
+myorigin = /etc/mailname 
+myhostname = debianX.linuxX.tvz.hr 
+alias_maps = hash:/etc/aliases 
+alias_database = hash:/etc/aliases
+mydestination = debianX.linuxX.tvz.hr linuxX.tvz.hr localhost 
+mynetworks = 127.0.0.0/8 172.16.X.0/24 
+mailbox_command = procmail -a "$EXTENSION" 
+mailbox_size_limit = 0 
+recipient_delimiter = + 
+inet_interfaces = all
+ 
+pazite da je enter kod svakog novog parametra
+onda zadati naredbu kako bi se zapisala baza aliasa: 
+newaliases 
+te restart servisa:
+ /etc/init.d/postfix restart
+nakon toga pokrenite alpine pod naredbom root i pošaljite e-mail korisniku pero
+Alpine
+E (exit this greeting)
+C (compose message)
+ 
+ 
+ 
+ 
+8.	podesite TCP wrapper hosts deny tako da se na servis apache2 moze spojiti samo sa adrese 172.16.1.2
+ 
+nano /etc/hosts.deny
+
+//dodati na kraj:
+apache2: ALL EXCEPT 172.16.1.2
+//sejvat i izac van
+
+ 
+9.	prebacite apache posluzitelj tako da posluzuje stranice iz direktorija /home/jura (napravite navedeno za definiranu stranicu 000-default i globalnim postavkama apache2 servisa)
+
+
+
+nano /etc/apache2/sites-enabled/000-default.conf
+//Promjenimo DocumentRoot u /home/jura
+
+nano /etc/apache2/apache2.conf
+
+//tamo di su dozvole dodati: ( oko linije 160 + ima defaultne postavke za Directory) 
+ 
+<Driectory /home/jura>
+Options Indexes FollowSymLinks
+AllowOverride None
+Require all granted
+</Directory>
+
+mkdir jura
+chmod -R 755 jura/
+ 
+cd jura/
+nano indeks.php
+<?php
+echo „Hello world“;
+?>
+chmod 755 indeks.php
+/etc/init.d/apache2 restart
+
+
+10.	U amavisu aktivirajte pretragu za spamom po svakom pristiglom mailu. Promijeniti potrebno u konfiguracijskim datotekama amavisa.
+
+nano /etc/amavis/conf.d/15-content_filter_mode
+ (odkomentirat zadnje dvije zakomentirane linije)
+
+ @bypass_spam_checks_maps = ( %bypass_spam_checks, @bypass_spam_checks_acl, $bypass_spam_checks_re); 
+
+/etc/init.d/amavis restart
+
+
